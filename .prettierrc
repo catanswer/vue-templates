@@ -1,0 +1,18 @@
+{
+	"$schema": "https://json.schemastore.org/prettierrc",
+	"semi": false,
+	"singleQuote": true,
+	"bracketSpacing": true,
+	"printWidth": 100,
+	"tabWidth": 4,
+	"useTabs": true,
+	"quoteProps": "as-needed",
+	"jsxSingleQuote": false,
+	"trailingComma": "all",
+	"jsxBracketSameLine": true,
+	"arrowParens": "avoid",
+	"endOfLine": "lf",
+	"embeddedLanguageFormatting": "auto",
+	"htmlWhitespaceSensitivity": "ignore",
+	"plugins": ["@prettier/plugin-pug"]
+}
