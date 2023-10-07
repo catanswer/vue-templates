@@ -1,6 +1,4 @@
 <script setup>
-import GTableColumn from './components/GTableColumn.vue'
-
 const props = defineProps({
 	loading: Boolean,
 	// 数据列若无数据 默认显示 '--'
@@ -30,8 +28,8 @@ el-table(v-bind='$attrs', v-loading='loading', ref='tableRef', :height='$attrs.h
 		:column='column',
 		:default-row-value='defaultRowValue'
 	)
-		template(#[column.prop]='scope')
-			slot(:name='column.prop', :data='scope', :row='scope.row', :index='scope.$index')
+		template(#[column.prop]='{ row, index }')
+			slot(:name='column.prop', :row='row', :column='column', :index='index')
 </template>
 
 <style lang="scss" scoped></style>

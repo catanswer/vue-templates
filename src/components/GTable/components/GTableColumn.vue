@@ -15,16 +15,16 @@ el-table-column(
 	:align='column.align || "center"',
 	:prop='column.type ? "" : column.prop'
 )
-	template(#default='scope')
+	template(#default='{ row, $index }')
 		//- 定义每一列的插槽 外部使用Page时 可以直接使用插槽定义每一列
 		slot(
 			v-if='column.type !== "selection" && column.prop',
 			:name='column.prop',
-			:data='scope',
-			:row='scope.row',
-			:index='scope.$index'
+			:row='row',
+			:column='column',
+			:index='$index'
 		)
-			| {{ scope && (scope.row[column.prop] || [0, '0'].includes(scope.row[column.prop])) ? scope.row[column.prop] : defaultRowValue }}
+			| {{ row[column.prop] || [0, '0'].includes(row[column.prop]) ? row[column.prop] : defaultRowValue }}
 		template(v-if='column.columns && column.columns.length > 0')
 			g-table-column(v-for='(item, index) in (column.columns || [])', :key='index', :column='item')
 </template>
