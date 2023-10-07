@@ -73,6 +73,16 @@ const handleSelectionChange = data => {
 const handleEdit = rowData => {
 	console.log('🚀 ~ file: index.vue:76 ~ handleEdit ~ rowData:', rowData)
 }
+
+// 分页
+const total = ref(100)
+const page = ref({
+	pageNum: 1,
+	pageSize: 10,
+})
+const handlePagination = data => {
+	console.log('🚀 ~ file: index.vue:84 ~ handlePagination ~ data:', data)
+}
 </script>
 
 <template lang="pug">
@@ -87,10 +97,13 @@ const handleEdit = rowData => {
 	)
 		template(#deal='{ row }')
 			el-button(v-blur, type='primary', size='small', @click='handleEdit(row)') 编辑
+	g-pagination(v-model='page', :total='total', @pagination='handlePagination')
 </template>
 
 <style lang="scss" scoped>
 .g-form-demo {
+	display: flex;
+	flex-direction: column;
 	padding: 12px;
 	height: 100%;
 }
