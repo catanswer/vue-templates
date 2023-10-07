@@ -1,7 +1,11 @@
 <template lang="pug">
 el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 	el-row(:gutter='16')
-		el-col(v-for='item in data', :span='$attrs.inline ? 24 : item.col ?? 6')
+		el-col(
+			v-for='item in data',
+			v-show='item.show ?? true',
+			:span='$attrs.inline ? 24 : item.col ?? 6'
+		)
 			el-form-item(
 				:key='item.key',
 				:label='`${item.label}${labelColon ? "：" : ""}`',
@@ -87,6 +91,7 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 								el-icon(v-blur, size='20')
 									icon-ep-circle-plus
 								.text 上传照片
+		slot
 </template>
 
 <script setup>
@@ -137,43 +142,23 @@ const form = computed({
 		emits('update:modelValue', value)
 	},
 })
-// const rules = shallowRef({})
-
-// 生成表单验证规则
-// const generateRules = () => {
-// 	const result = {}
-// 	const hasRulesItems = props.items.filter(item => typeof item.rules !== 'undefined')
-// 	hasRulesItems.forEach(item => {
-// 		result[item.key] = item.rules
-// 	})
-
-// 	if (hasRulesItems.length > 0) {
-// 		rules.value = result
-// 	}
-// }
 // 验证表单项数据是否完整
 const verifyIntegrity = () => {
 	const keys = []
 	for (const item of props.data) {
 		if (!item.component) {
-			console.warn('Warning：items中缺少component字段')
+			console.warn('Warning：data中缺少component字段')
 			break
 		}
 		if (!item.key) {
-			console.warn('Warning：items中缺少key字段')
+			console.warn('Warning：data中缺少key字段')
 			break
 		}
 
 		if (keys.includes(item.key)) {
-			console.warn('Warning：items中有重复key')
+			console.warn('Warning：data中有重复key')
 		} else {
 			keys.push(item.key)
-		}
-		if (item.upload) {
-			if (!item.upload.emits) {
-				console.warn('Warning： uploader中缺少emits字段')
-				break
-			}
 		}
 	}
 }
@@ -212,7 +197,9 @@ defineExpose({
 
 <style lang="scss" scoped>
 .form {
-	overflow: hidden;
+	.el-form-item {
+		margin-bottom: 14px;
+	}
 }
 .desc {
 	display: flex;
