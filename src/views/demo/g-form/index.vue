@@ -1,6 +1,6 @@
 <template lang="pug">
 .g-form-demo
-	g-form(v-model='formData', :items='items')
+	g-form(v-model='formData', :data='data')
 	el-button(v-blur, type='primary') 123
 </template>
 
@@ -26,7 +26,7 @@ const handleBeforeUpload = file => {
 	return true
 }
 
-const items = ref([
+const data = ref([
 	{
 		key: 'name',
 		label: '姓名',

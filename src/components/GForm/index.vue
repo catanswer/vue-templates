@@ -1,7 +1,7 @@
 <template lang="pug">
 el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 	el-row(:gutter='16')
-		el-col(v-for='item in items', :span='$attrs.inline ? 24 : item.col ?? 6')
+		el-col(v-for='item in data', :span='$attrs.inline ? 24 : item.col ?? 6')
 			el-form-item(
 				:key='item.key',
 				:label='`${item.label}${labelColon ? "：" : ""}`',
@@ -118,7 +118,7 @@ const props = defineProps({
 	// v-model绑定值
 	modelValue: { type: Object, required: true },
 	// formItem数据
-	items: { type: Array, required: true },
+	data: { type: Array, required: true },
 	// 是否自动在 label 名称后添加冒号
 	labelColon: {
 		type: Boolean,
@@ -154,7 +154,7 @@ const form = computed({
 // 验证表单项数据是否完整
 const verifyIntegrity = () => {
 	const keys = []
-	for (const item of props.items) {
+	for (const item of props.data) {
 		if (!item.component) {
 			console.warn('Warning：items中缺少component字段')
 			break
