@@ -1,6 +1,12 @@
 <template lang="pug">
-router-view
+el-config-provider(:locale='locale')
+	router-view
 </template>
+
+<script setup>
+import zhCN from 'element-plus/dist/locale/zh-cn.mjs'
+const locale = ref(zhCN)
+</script>
 
 <style lang="scss">
 #app {
