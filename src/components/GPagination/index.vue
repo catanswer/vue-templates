@@ -3,13 +3,12 @@ const props = defineProps({
 	modelValue: {
 		type: Object,
 		default: () => {
-			return { pageNum: 1, pageSize: 10 }
+			return { pageNum: 1, pageSize: 10, total: 0 }
 		},
 	},
-	total: {
-		required: true,
+	pagerCount: {
 		type: Number,
-		default: 0,
+		default: 5,
 	},
 	pageSizes: {
 		type: Array,
@@ -54,8 +53,9 @@ const handleChange = () => {
 		v-bind='$attrs',
 		v-model:current-page='modelValue.pageNum',
 		v-model:page-size='modelValue.pageSize',
+		:total='modelValue.total',
+		:pager-count='pagerCount',
 		:page-sizes='pageSizes',
-		:total='total',
 		:layout='layout',
 		@current-change='handleChange',
 		@size-change='handleChange'
