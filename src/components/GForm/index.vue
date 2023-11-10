@@ -1,6 +1,6 @@
 <template lang="pug">
 el-form.form(ref='formRef', v-bind='$attrs', :model='form')
-	el-row(:gutter='16')
+	el-row(:gutter='gutter')
 		el-col(
 			v-for='item in data',
 			v-show='item.show ?? true',
@@ -18,6 +18,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 					v-model.trim='form[item.key]',
 					v-bind='item.props'
 				)
+					template(v-for='slot in slotsData', #[slot])
+						slot(:name='`${item.key}-${slot}`')
 				el-input-number(
 					v-else-if='item.component === "el-input-number"',
 					v-model.number='form[item.key]',
@@ -28,6 +30,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 					v-model='form[item.key]',
 					v-bind='item.props'
 				)
+					template(v-for='slot in slotsData', #[slot])
+						slot(:name='`${item.key}-${slot}`')
 					el-option(v-for='o in item.options', :key='o.value', :label='o.label', :value='o.value')
 				el-checkbox-group(
 					v-else-if='item.component === "el-checkbox" && Array.isArray(item.options)',
@@ -52,16 +56,31 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 						div {{ label }}
 						el-tooltip(placement='right', :content='item.desc')
 							icon-ep-question-filled
-
 				//- 上传组件
 				el-carousel.carousel(
-					v-if='item.component === "el-upload" && form[item.key].length > 0',
+					v-if='item.component === "el-upload" && form[item.key].length > 0 && item.imgListFold',
 					height='78px',
 					arrow='hover',
 					:autoplay='false',
 					indicator-position='none'
 				)
 					el-carousel-item(v-for='(img, index) in form[item.key]', :key='index')
+						el-button.remove(
+							v-blur,
+							:disabled='item.disabled',
+							@click='handleRemoveImg(item.key, index)'
+						)
+							el-icon(color='#fff', size='14')
+								icon-ep-delete
+						el-image(
+							:src='form[item.key][index].url',
+							:preview-src-list='form[item.key].map(it => it.url)',
+							preview-teleported
+						)
+				.image-list(
+					v-if='item.component === "el-upload" && form[item.key].length > 0 && !item.imgListFold'
+				)
+					.image-list-item(v-for='(img, index) in form[item.key]', :key='index')
 						el-button.remove(
 							v-blur,
 							:disabled='item.disabled',
@@ -88,9 +107,10 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 							:style='{ backgroundColor: item.disabled ? "#f4f5fb" : "" }'
 						)
 							.icon
-								el-icon(v-blur, size='20')
+								el-icon(v-blur, :size='20')
 									icon-ep-circle-plus
 								.text 上传照片
+				slot(:name='`${item.key}-left`')
 		slot
 </template>
 
@@ -127,8 +147,22 @@ const props = defineProps({
 	// 是否自动在 label 名称后添加冒号
 	labelColon: {
 		type: Boolean,
-		default: true,
+		default: false,
 	},
+	// 表单项横向间距
+	gutter: {
+		type: Number,
+		default: 16,
+	},
+})
+
+// 获取父组件所有slot的数据 进行处理
+const { slots } = getCurrentInstance()
+const slotsData = computed(() => {
+	return Object.keys(slots).map(item => {
+		const [, originName] = item.split('-')
+		return originName
+	})
 })
 
 const emits = ['update:modelValue']
@@ -200,6 +234,11 @@ defineExpose({
 	.el-form-item {
 		margin-bottom: 14px;
 	}
+	:deep {
+		.el-input {
+			flex: 1;
+		}
+	}
 }
 .desc {
 	display: flex;
@@ -213,25 +252,7 @@ defineExpose({
 	border: 1px solid #e1e2ec;
 	border-radius: 4px;
 	margin-right: 12px;
-	.remove {
-		position: absolute;
-		z-index: 9;
-		top: -26px;
-		right: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 26px;
-		height: 26px;
-		padding: 0;
-		border-radius: 0 4px;
-		transition: all 0.3s;
-		border: none;
-		background-color: rgba(0, 0, 0, 0.3);
-		&:hover {
-			background-color: rgba(0, 0, 0, 0.6);
-		}
-	}
+	overflow: hidden;
 	:deep {
 		.el-carousel__container {
 			&:hover {
@@ -262,6 +283,41 @@ defineExpose({
 		}
 	}
 }
+.image-list {
+	display: flex;
+	flex-wrap: wrap;
+	.image-list-item {
+		position: relative;
+		margin-right: 12px;
+		width: 78px;
+		height: 78px;
+		overflow: hidden;
+		&:hover {
+			.remove {
+				top: 0;
+			}
+		}
+	}
+}
+.remove {
+	position: absolute;
+	z-index: 9;
+	top: -26px;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	padding: 0;
+	border-radius: 0 4px;
+	transition: all 0.3s;
+	border: none;
+	background-color: rgba(0, 0, 0, 0.3);
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.6);
+	}
+}
 .upload-button {
 	width: 78px;
 	height: 78px;
@@ -274,6 +330,7 @@ defineExpose({
 		align-items: center;
 		height: 78px;
 		padding: 16px 0;
+		margin-top: 10px;
 		.text {
 			color: #9a9cb0;
 			font-size: 12px;
