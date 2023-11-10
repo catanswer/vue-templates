@@ -208,6 +208,8 @@ const validate = () =>
 	})
 // 重置表单
 const resetForm = () => unref(formRef)?.resetFields()
+// 移除该表单项的校验结果
+const clearValidate = () => unref(formRef)?.clearValidate()
 // 获取表单数据
 const getFormData = async () => {
 	if (JSON.stringify(rules.value) !== '{}') {
@@ -225,6 +227,7 @@ const handleRemoveImg = (key, index) => {
 defineExpose({
 	formRef,
 	resetForm,
+	clearValidate,
 	getFormData,
 })
 </script>
