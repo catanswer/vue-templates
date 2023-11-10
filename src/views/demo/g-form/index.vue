@@ -1,6 +1,8 @@
 <template lang="pug">
 .g-form-demo
 	g-form(v-model='formData', :data='data')
+		template(#children-suffix)
+			span 个
 	el-button(v-blur, type='primary') 123
 </template>
 
@@ -33,6 +35,14 @@ const data = ref([
 		component: 'el-input',
 		props: { placeholder: '请输入姓名' },
 		rules: [{ required: true, trigger: 'blur', message: '请输入姓名' }],
+	},
+	{
+		key: 'children',
+		label: '子女',
+		slot: true,
+		component: 'el-input',
+		props: { placeholder: '请输入子女个数' },
+		rules: [{ required: true, trigger: 'blur', message: '请输入子女个数' }],
 	},
 	{
 		key: 'age',
