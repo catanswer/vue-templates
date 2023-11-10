@@ -10,6 +10,10 @@ const props = defineProps({
 			}
 		},
 	},
+	hideSearch: {
+		type: Boolean,
+		default: false,
+	},
 	table: {
 		type: Object,
 		default: () => {
@@ -54,7 +58,7 @@ const paginationComp = computed({
 <template lang="pug">
 .page-container(v-loading='loading')
 	//- 搜索条件
-	.page-search
+	.page-search(v-if='!hideSearch')
 		g-form(v-bind='search', ref='formRef', v-model='search.model', :data='search.data')
 			el-button(v-blur, type='primary', @click='emits("refresh", 1)') 查询
 			el-button(v-blur, @click='handleReset') 重置
