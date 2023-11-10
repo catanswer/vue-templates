@@ -53,10 +53,13 @@ const paginationComp = computed({
 
 <template lang="pug">
 .page-container(v-loading='loading')
-	//- 搜索调价
-	g-form(v-bind='search', ref='formRef', v-model='search.model', :data='search.data')
-		el-button(v-blur, type='primary', @click='emits("refresh", 1)') 查询
-		el-button(v-blur, @click='handleReset') 重置
+	//- 搜索条件
+	.page-search
+		g-form(v-bind='search', ref='formRef', v-model='search.model', :data='search.data')
+			el-button(v-blur, type='primary', @click='emits("refresh", 1)') 查询
+			el-button(v-blur, @click='handleReset') 重置
+				slot(name='search-start')
+		slot(name='search-end')
 	//- 中间地带
 	slot(name='between')
 	//- 表格
@@ -76,6 +79,16 @@ const paginationComp = computed({
 	display: flex;
 	flex-direction: column;
 	padding: 12px;
+	width: 100%;
 	height: 100%;
+	overflow: auto;
+}
+.page-search {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	.form {
+		flex: 1;
+	}
 }
 </style>
