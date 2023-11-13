@@ -23,6 +23,10 @@ const props = defineProps({
 			}
 		},
 	},
+	hidePagination: {
+		type: Boolean,
+		default: false,
+	},
 	pagination: {
 		type: Object,
 		default: () => {
@@ -75,7 +79,12 @@ const paginationComp = computed({
 		)
 			slot(:name='column.prop', :row='row', :column='column', :index='index')
 	//- 分页
-	g-pagination(v-bind='pagination', v-model='paginationComp', @pagination='emits("refresh")')
+	g-pagination(
+		v-if='!hidePagination',
+		v-bind='pagination',
+		v-model='paginationComp',
+		@pagination='emits("refresh")'
+	)
 </template>
 
 <style lang="scss" scoped>
