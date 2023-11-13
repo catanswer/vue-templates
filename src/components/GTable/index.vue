@@ -11,7 +11,7 @@ const props = defineProps({
 
 const tableRef = ref(null)
 // 滚动条置顶
-const setScrollTop = top => {
+const setScrollTop = (top = 0) => {
 	tableRef.value.setScrollTop(top)
 }
 
