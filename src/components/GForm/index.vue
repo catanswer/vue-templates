@@ -16,19 +16,22 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 				el-input(
 					v-if='item.component === "el-input"',
 					v-model.trim='form[item.key]',
-					v-bind='item.props'
+					v-bind='item.props',
+					v-on='item.events || {}'
 				)
 					template(v-for='slot in slotsData', #[slot])
 						slot(:name='`${item.key}-${slot}`')
 				el-input-number(
 					v-else-if='item.component === "el-input-number"',
 					v-model.number='form[item.key]',
-					v-bind='item.props'
+					v-bind='item.props',
+					v-on='item.events || {}'
 				)
 				el-select(
 					v-else-if='item.component === "el-select" && Array.isArray(item.options)',
 					v-model='form[item.key]',
-					v-bind='item.props'
+					v-bind='item.props',
+					v-on='item.events || {}'
 				)
 					template(v-for='slot in slotsData', #[slot])
 						slot(:name='`${item.key}-${slot}`')
@@ -36,20 +39,23 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 				el-checkbox-group(
 					v-else-if='item.component === "el-checkbox" && Array.isArray(item.options)',
 					v-model='form[item.key]',
-					v-bind='item.props'
+					v-bind='item.props',
+					v-on='item.events || {}'
 				)
 					el-checkbox(v-for='o in item.options', :key='o.value', :label='o.label', :value='o.value')
 				el-radio-group(
 					v-else-if='item.component === "el-radio" && Array.isArray(item.options)',
 					v-model='form[item.key]',
-					v-bind='item.props'
+					v-bind='item.props',
+					v-on='item.events || {}'
 				)
 					el-radio(v-for='o in item.options', :key='o.value', :label='o.value') {{ o.label }}
 				component(
 					v-else,
 					:is='compoents[item.component]',
 					v-model='form[item.key]',
-					v-bind='item.props'
+					v-bind='item.props',
+					v-on='item.events || {}'
 				)
 				template(#label='{ label }', v-if='item.desc')
 					.desc
@@ -98,7 +104,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 					v-model:file-list='form[item.key]',
 					:disabled='$attrs.disabled || item.props.disabled',
 					:show-file-list='false',
-					v-bind='item.props'
+					v-bind='item.props',
+					v-on='item.events || {}'
 				)
 					template(#trigger)
 						el-button.upload-button(
