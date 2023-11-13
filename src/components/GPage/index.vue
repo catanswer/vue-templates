@@ -57,6 +57,11 @@ const paginationComp = computed({
 		emits('update:pagination', value)
 	},
 })
+
+const tableRef = ref()
+defineExpose({
+	tableRef,
+})
 </script>
 
 <template lang="pug">
@@ -71,7 +76,7 @@ const paginationComp = computed({
 	//- 中间地带
 	slot(name='between')
 	//- 表格
-	g-table(v-bind='$attrs', :columns='table.columns', :data='table.data')
+	g-table(ref='tableRef', v-bind='$attrs', :columns='table.columns', :data='table.data')
 		template(
 			v-for='column in table.columns',
 			v-show='column.prop',
