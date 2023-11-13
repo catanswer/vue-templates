@@ -10,6 +10,11 @@ const props = defineProps({
 })
 
 const tableRef = ref(null)
+const columnsComp = computed(() => {
+	return props.columns.filter(item => {
+		return !!(item.show === undefined) || item.show
+	})
+})
 // 滚动条置顶
 const setScrollTop = (top = 0) => {
 	tableRef.value.setScrollTop(top)
@@ -24,7 +29,7 @@ defineExpose({
 <template lang="pug">
 el-table(v-bind='$attrs', v-loading='loading', ref='tableRef', :height='$attrs.height || "100%"')
 	g-table-column(
-		v-for='column in columns',
+		v-for='column in columnsComp',
 		:column='column',
 		:default-row-value='defaultRowValue'
 	)
