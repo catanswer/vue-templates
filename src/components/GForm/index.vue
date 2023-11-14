@@ -120,7 +120,7 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 							.icon
 								el-icon(v-blur, :size='20')
 									icon-ep-circle-plus
-								.text 上传照片
+								.text {{ item.props?.text || '上传图片' }}
 				slot(:name='`${item.key}-left`')
 		slot
 </template>
