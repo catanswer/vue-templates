@@ -63,6 +63,7 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 						el-tooltip(placement='right', :content='item.desc')
 							icon-ep-question-filled
 				//- 上传组件
+				//- 收起状态 - 使用跑马灯切换
 				el-carousel.carousel(
 					v-if='item.component === "el-upload" && form[item.key].length > 0 && item.imgListFold',
 					height='78px',
@@ -72,8 +73,9 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 				)
 					el-carousel-item(v-for='(img, index) in form[item.key]', :key='index')
 						el-button.remove(
+							v-if='!($attrs.disabled || item.props?.disabled)',
 							v-blur,
-							:disabled='item.disabled',
+							:disabled='$attrs.disabled || item.props?.disabled',
 							@click='handleRemoveImg(item.key, index)'
 						)
 							el-icon(color='#fff', size='14')
@@ -83,13 +85,15 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 							:preview-src-list='form[item.key].map(it => it.url)',
 							preview-teleported
 						)
+				//- 展开状态 - 图片平铺展示
 				.image-list(
 					v-if='item.component === "el-upload" && form[item.key].length > 0 && !item.imgListFold'
 				)
 					.image-list-item(v-for='(img, index) in form[item.key]', :key='index')
 						el-button.remove(
+							v-if='!($attrs.disabled || item.props?.disabled)',
 							v-blur,
-							:disabled='item.disabled',
+							:disabled='$attrs.disabled || item.props?.disabled',
 							@click='handleRemoveImg(item.key, index)'
 						)
 							el-icon(color='#fff', size='14')
@@ -100,9 +104,9 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 							preview-teleported
 						)
 				el-upload(
-					v-if='item.component === "el-upload"',
+					v-if='item.component === "el-upload" && !($attrs.disabled || item.props?.disabled)',
 					v-model:file-list='form[item.key]',
-					:disabled='$attrs.disabled || item.props.disabled',
+					:disabled='$attrs.disabled || item.props?.disabled',
 					:show-file-list='false',
 					v-bind='item.props',
 					v-on='item.events || {}'
@@ -110,8 +114,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 					template(#trigger)
 						el-button.upload-button(
 							v-blur,
-							:disabled='item.disabled',
-							:style='{ backgroundColor: item.disabled ? "#f4f5fb" : "" }'
+							:disabled='$attrs.disabled || item.props?.disabled',
+							:style='{ backgroundColor: $attrs.disabled || item.props?.disabled ? "#f4f5fb" : "" }'
 						)
 							.icon
 								el-icon(v-blur, :size='20')
