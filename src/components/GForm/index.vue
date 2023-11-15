@@ -11,6 +11,7 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 				:label='`${item.label}${labelColon ? "：" : ""}`',
 				:prop='item.key',
 				:rules='item.rules',
+				v-bind='item.itemProps',
 				style='position: relative'
 			)
 				el-input(
