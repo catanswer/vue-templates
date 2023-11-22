@@ -214,10 +214,12 @@ onMounted(() => {
 })
 
 // 表单验证
-const validate = () =>
-	new Promise(resolve => {
+const validate = () => {
+	return new Promise(resolve => {
 		unref(formRef).validate(valid => resolve(valid))
 	})
+}
+
 // 重置表单
 const resetForm = () => unref(formRef)?.resetFields()
 // 移除该表单项的校验结果
@@ -312,6 +314,12 @@ defineExpose({
 				top: 0;
 			}
 		}
+		:deep {
+			.el-image {
+				width: 100%;
+				height: 100%;
+			}
+		}
 	}
 }
 .remove {
@@ -358,6 +366,16 @@ defineExpose({
 	.el-cascader,
 	.el-select {
 		width: 100%;
+	}
+
+	.el-input {
+		display: inline-flex;
+	}
+
+	.el-upload--picture-card {
+		width: 100%;
+		height: 100%;
+		border: none;
 	}
 }
 </style>
