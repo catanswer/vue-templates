@@ -1,5 +1,5 @@
 <template lang="pug">
-el-form.form(ref='formRef', v-bind='$attrs', :model='form')
+el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.prevent)
 	el-row(:gutter='gutter')
 		el-col(
 			v-for='item in data',
