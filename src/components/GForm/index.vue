@@ -63,6 +63,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form')
 						div {{ label }}
 						el-tooltip(placement='right', :content='item.desc')
 							icon-ep-question-filled
+				//- 自定义组件
+				slot(v-if='item.slot', :name='item.slot')
 				//- 上传组件
 				//- 收起状态 - 使用跑马灯切换
 				el-carousel.carousel(
@@ -214,12 +216,9 @@ onMounted(() => {
 })
 
 // 表单验证
-const validate = () => {
-	return new Promise(resolve => {
-		unref(formRef).validate(valid => resolve(valid))
-	})
-}
-
+const validate = async () => await unref(formRef)?.validate()
+// 验证具体的某个字段
+const validateField = (key, callback) => unref(formRef)?.validateField(key, callback)
 // 重置表单
 const resetForm = () => unref(formRef)?.resetFields()
 // 移除该表单项的校验结果
@@ -243,6 +242,8 @@ defineExpose({
 	resetForm,
 	clearValidate,
 	getFormData,
+	validate,
+	validateField,
 })
 </script>
 
@@ -252,7 +253,8 @@ defineExpose({
 		margin-bottom: 14px;
 	}
 	:deep {
-		.el-input {
+		.el-input,
+		.el-select {
 			flex: 1;
 		}
 	}
