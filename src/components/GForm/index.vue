@@ -218,7 +218,13 @@ onMounted(() => {
 // 表单验证
 const validate = async () => await unref(formRef)?.validate()
 // 验证具体的某个字段
-const validateField = (key, callback) => unref(formRef)?.validateField(key, callback)
+const validateField = key => {
+	return new Promise(resolve => {
+		unref(formRef)?.validateField(key, valid => {
+			resolve(valid)
+		})
+	})
+}
 // 重置表单
 const resetForm = () => unref(formRef)?.resetFields()
 // 移除该表单项的校验结果
