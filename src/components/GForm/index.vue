@@ -20,8 +20,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 					v-bind='item.props',
 					v-on='item.events || {}'
 				)
-					template(v-for='slot in slotsData', #[slot])
-						slot(:name='`${item.key}-${slot}`')
+					template(v-for='slot in getSlotsByKey(item.key)', #[slot])
+						slot(:name='slot')
 				el-input-number(
 					v-else-if='item.component === "el-input-number"',
 					v-model.number='form[item.key]',
@@ -34,9 +34,11 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 					v-bind='item.props',
 					v-on='item.events || {}'
 				)
-					template(v-for='slot in slotsData', #[slot])
-						slot(:name='`${item.key}-${slot}`')
+					template(v-for='slot in getSlotsByKey(item.key)', #[slot])
+						slot(:name='slot')
 					el-option(v-for='o in item.options', :key='o.value', :label='o.label', :value='o.value')
+						template(v-for='slot in getSlotsByKey(item.key, "option")')
+							slot(:name='slot', :data='o')
 				el-checkbox-group(
 					v-else-if='item.component === "el-checkbox" && Array.isArray(item.options)',
 					v-model='form[item.key]',
@@ -172,12 +174,20 @@ const props = defineProps({
 
 // 获取父组件所有slot的数据 进行处理
 const { slots } = getCurrentInstance()
-const slotsData = computed(() => {
+const getSlotsByKey = (key, subkey = '') => {
 	return Object.keys(slots).map(item => {
-		const [, originName] = item.split('-')
-		return originName
+		const [keyValue = '', nameValue = '', slotName = ''] = item.split('-')
+		if (subkey) {
+			if (keyValue === key && nameValue === subkey) {
+				return item
+			}
+		} else {
+			if (keyValue === key && !slotName) {
+				return item
+			}
+		}
 	})
-})
+}
 
 const emits = ['update:modelValue']
 

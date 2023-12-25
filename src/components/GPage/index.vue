@@ -48,6 +48,24 @@ const handleReset = () => {
 	emits('refresh', 1)
 }
 
+// 搜索条件slots search-operator-default
+// search: 固定
+// operator: 对应表单key
+// option: 嵌套组件的name
+// default: 对应表单的插槽名称
+const { slots } = getCurrentInstance()
+const searchSlots = computed(() => {
+	return Object.keys(slots)
+		.filter(item => {
+			const [data1 = ''] = item.split('-')
+			return data1 === 'search'
+		})
+		.map(item => {
+			const [, data2, data3, data4] = item.split('-')
+			return `${data2}-${data3}-${data4}`
+		})
+})
+
 // 分页
 const paginationComp = computed({
 	get() {
@@ -70,8 +88,10 @@ defineExpose({
 	.page-search(v-if='!hideSearch')
 		g-form(v-bind='search', ref='formRef', v-model='search.model', :data='search.data')
 			el-button(v-blur, type='primary', @click='emits("refresh", 1)') 查询
-			el-button(v-blur, @click='handleReset') 重置
-				slot(name='search-start')
+			el-button(v-blur, @click='handleReset') 重置、
+			template(v-for='searchSlot in searchSlots', #[searchSlot]='{ data }')
+				slot(:name='`search-${searchSlot}`', :data='data')
+			slot(name='search-start')
 		slot(name='search-end')
 	//- 中间地带
 	slot(name='between')
