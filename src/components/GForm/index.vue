@@ -116,7 +116,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 					:disabled='$attrs.disabled || item.props?.disabled',
 					:show-file-list='false',
 					v-bind='item.props',
-					v-on='item.events || {}'
+					v-on='item.events || {}',
+					style='margin-bottom: 12px'
 				)
 					template(#trigger)
 						el-button.upload-button(
@@ -326,10 +327,11 @@ defineExpose({
 	flex-wrap: wrap;
 	.image-list-item {
 		position: relative;
-		margin-right: 12px;
 		width: 78px;
 		height: 78px;
 		overflow: hidden;
+		margin-right: 12px;
+		margin-bottom: 12px;
 		&:hover {
 			.remove {
 				top: 0;
