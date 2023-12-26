@@ -106,6 +106,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 						el-image(
 							:src='form[item.key][index].url',
 							:preview-src-list='form[item.key].map(it => it.url)',
+							:initial-index='imgPreviewIndex',
+							@click='imgPreviewIndex = index',
 							preview-teleported
 						)
 				el-upload(
@@ -248,6 +250,7 @@ const getFormData = async () => {
 	return toRaw(form.value)
 }
 
+const imgPreviewIndex = ref(0)
 // 删除图片
 const handleRemoveImg = (key, index) => {
 	form.value[key].splice(index, 1)
