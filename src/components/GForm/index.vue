@@ -21,7 +21,7 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 					v-on='item.events || {}'
 				)
 					template(v-for='slot in getSlotsByKey(item.key)', #[slot])
-						slot(:name='slot')
+						slot(:name='`${item.key}-${slot}`')
 				el-input-number(
 					v-else-if='item.component === "el-input-number"',
 					v-model.number='form[item.key]',
@@ -35,7 +35,7 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 					v-on='item.events || {}'
 				)
 					template(v-for='slot in getSlotsByKey(item.key)', #[slot])
-						slot(:name='slot')
+						slot(:name='`${item.key}-${slot}`')
 					el-option(v-for='o in item.options', :key='o.value', :label='o.label', :value='o.value')
 						template(v-for='slot in getSlotsByKey(item.key, "option")')
 							slot(:name='slot', :data='o')
@@ -178,18 +178,20 @@ const props = defineProps({
 // 获取父组件所有slot的数据 进行处理
 const { slots } = getCurrentInstance()
 const getSlotsByKey = (key, subkey = '') => {
-	return Object.keys(slots).map(item => {
-		const [keyValue = '', nameValue = '', slotName = ''] = item.split('-')
-		if (subkey) {
-			if (keyValue === key && nameValue === subkey) {
-				return item
+	return Object.keys(slots)
+		.map(item => {
+			const [keyValue = '', nameValue = '', slotName = ''] = item.split('-')
+			if (subkey) {
+				if (keyValue === key && nameValue === subkey) {
+					return item
+				}
+			} else {
+				if (keyValue === key) {
+					return nameValue
+				}
 			}
-		} else {
-			if (keyValue === key && !slotName) {
-				return item
-			}
-		}
-	})
+		})
+		.filter(Boolean)
 }
 
 const emits = ['update:modelValue']

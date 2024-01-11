@@ -62,7 +62,7 @@ const searchSlots = computed(() => {
 		})
 		.map(item => {
 			const [, data2, data3, data4] = item.split('-')
-			return `${data2}-${data3}-${data4}`
+			return data4 ? `${data2}-${data3}-${data4}` : `${data2}-${data3}`
 		})
 })
 
