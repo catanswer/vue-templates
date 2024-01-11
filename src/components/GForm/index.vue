@@ -391,8 +391,12 @@ defineExpose({
 	.el-cascader,
 	.el-select {
 		width: 100%;
+		.el-select__tags > span {
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
 	}
-
 	.el-input {
 		display: inline-flex;
 	}
