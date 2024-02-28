@@ -86,9 +86,15 @@ defineExpose({
 .page-container(v-loading='loading')
 	//- 搜索条件
 	.page-search(v-if='!hideSearch')
-		g-form(v-bind='search', ref='formRef', v-model='search.model', :data='search.data')
-			el-button(v-blur, type='primary', @click='emits("refresh", 1)') 查询
-			el-button(v-blur, @click='handleReset') 重置、
+		g-form.page-gc-form(
+			v-bind='search',
+			ref='formRef',
+			v-model='search.model',
+			:data='search.data'
+		)
+			.default-buttons
+				el-button(v-blur, type='primary', @click='emits("refresh", 1)') 查询
+				el-button(v-blur, @click='handleReset') 重置
 			template(v-for='searchSlot in searchSlots', #[searchSlot]='{ data }')
 				slot(:name='`search-${searchSlot}`', :data='data')
 			slot(name='search-start')
@@ -96,7 +102,12 @@ defineExpose({
 	//- 中间地带
 	slot(name='between')
 	//- 表格
-	g-table(ref='tableRef', v-bind='$attrs', :columns='table.columns', :data='table.data')
+	g-table.page-gc-table(
+		ref='tableRef',
+		v-bind='$attrs',
+		:columns='table.columns',
+		:data='table.data'
+	)
 		template(
 			v-for='column in table.columns',
 			v-show='column.prop',
@@ -125,8 +136,19 @@ defineExpose({
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
-	.form {
+	.page-gc-form {
 		flex: 1;
+		:deep {
+			.el-form-item {
+				margin-bottom: 12px;
+			}
+		}
 	}
+}
+.page-gc-table {
+	margin-top: 8px;
+}
+.default-buttons {
+	margin-bottom: 12px;
 }
 </style>
