@@ -93,8 +93,8 @@ defineExpose({
 			:data='search.data'
 		)
 			.default-buttons
-				el-button(v-blur, type='primary', @click='emits("refresh", 1)') 查询
-				el-button(v-blur, @click='handleReset') 重置
+				el-button(v-if='search?.data.length', v-blur, type='primary', @click='emits("refresh", 1)') 查询
+				el-button(v-if='search?.data.length', v-blur, @click='handleReset') 重置
 			template(v-for='searchSlot in searchSlots', #[searchSlot]='{ data }')
 				slot(:name='`search-${searchSlot}`', :data='data')
 			slot(name='search-start')
