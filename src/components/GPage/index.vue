@@ -99,35 +99,31 @@ defineExpose({
 				slot(:name='`search-${searchSlot}`', :data='data')
 			slot(name='search-start')
 		slot(name='search-end')
-	//- 中间地带
-	slot(name='between')
-	//- 表格
-	g-table.page-gc-table(
-		ref='tableRef',
-		v-bind='$attrs',
-		:columns='table.columns',
-		:data='table.data'
-	)
-		template(
-			v-for='column in table.columns',
-			v-show='column.prop',
-			#[column.prop]='{ row, index }'
+	.page-table-pagination
+		//- 中间地带
+		slot(name='between')
+		//- 表格
+		g-table.page-table(ref='tableRef', v-bind='$attrs', :columns='table.columns', :data='table.data')
+			template(
+				v-for='column in table.columns',
+				v-show='column.prop',
+				#[column.prop]='{ row, index }'
+			)
+				slot(:name='column.prop', :row='row', :column='column', :index='index')
+		//- 分页
+		g-pagination(
+			v-if='!hidePagination',
+			v-bind='pagination',
+			v-model='paginationComp',
+			@pagination='emits("refresh")'
 		)
-			slot(:name='column.prop', :row='row', :column='column', :index='index')
-	//- 分页
-	g-pagination(
-		v-if='!hidePagination',
-		v-bind='pagination',
-		v-model='paginationComp',
-		@pagination='emits("refresh")'
-	)
 </template>
 
 <style lang="scss" scoped>
 .page-container {
 	display: flex;
 	flex-direction: column;
-	padding: 12px;
+	padding: 12px 12px 0 12px;
 	width: 100%;
 	height: 100%;
 	overflow: auto;
@@ -145,8 +141,13 @@ defineExpose({
 		}
 	}
 }
-.page-gc-table {
-	margin-top: 8px;
+.page-table-pagination {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
+	padding: 12px 12px 0 12px;
+	background-color: #fff;
 }
 .default-buttons {
 	margin-bottom: 12px;

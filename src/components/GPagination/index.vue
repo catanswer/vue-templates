@@ -66,7 +66,8 @@ const handleChange = () => {
 .pagination {
 	display: flex;
 	align-items: center;
-	padding-top: 12px;
+	padding: 12px;
+	background-color: #fff;
 }
 :deep(.el-select) {
 	.el-input {
