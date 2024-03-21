@@ -36,7 +36,13 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 				)
 					template(v-for='slot in getSlotsByKey(item.key)', #[slot])
 						slot(:name='`${item.key}-${slot}`')
-					el-option(v-for='o in item.options', :key='o.value', :label='o.label', :value='o.value')
+					el-option(
+						v-for='o in item.options',
+						:key='o.value',
+						:disabled='o.disabled ?? true',
+						:label='o.label',
+						:value='o.value'
+					)
 						template(v-for='slot in getSlotsByKey(item.key, "option")')
 							slot(:name='slot', :data='o')
 				el-checkbox-group(
