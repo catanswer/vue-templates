@@ -2,8 +2,8 @@
 el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.prevent)
 	el-row(:gutter='gutter')
 		el-col(
-			v-for='item in data',
-			v-show='item.show ?? true',
+			v-for='(item, index) in dataComp',
+			v-show='!expandedIndex || index <= expandedIndex',
 			:span='$attrs.inline ? 24 : item.col ?? 6'
 		)
 			el-form-item(
@@ -25,8 +25,7 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 				el-input-number(
 					v-else-if='item.component === "el-input-number"',
 					v-model.number='form[item.key]',
-					v-bind='item.props',
-					v-on='item.events || {}'
+					v-bind='item.props'
 				)
 				el-select(
 					v-else-if='item.component === "el-select" && Array.isArray(item.options)',
@@ -39,7 +38,7 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 					el-option(
 						v-for='o in item.options',
 						:key='o.value',
-						:disabled='o.disabled ?? true',
+						:disabled='o.disabled',
 						:label='o.label',
 						:value='o.value'
 					)
@@ -70,7 +69,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 					.desc
 						div {{ label }}
 						el-tooltip(placement='right', :content='item.desc')
-							icon-ep-question-filled
+							//- icon-ep-question-filled
+							question-filled
 				//- 自定义组件
 				slot(v-if='item.slot', :name='item.slot')
 				//- 上传组件
@@ -90,7 +90,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 							@click='handleRemoveImg(item.key, index)'
 						)
 							el-icon(color='#fff', size='14')
-								icon-ep-delete
+								//- icon-ep-delete
+								delete
 						el-image(
 							:src='form[item.key][index].url',
 							:preview-src-list='form[item.key].map(it => it.url)',
@@ -108,19 +109,21 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 							@click='handleRemoveImg(item.key, index)'
 						)
 							el-icon(color='#fff', size='14')
-								icon-ep-delete
+								//- icon-ep-delete
+								delete
 						el-image(
 							:src='form[item.key][index].url',
 							:preview-src-list='form[item.key].map(it => it.url)',
+							preview-teleported,
 							:initial-index='imgPreviewIndex',
-							@click='imgPreviewIndex = index',
-							preview-teleported
+							@click='imgPreviewIndex = index'
 						)
 				el-upload(
 					v-if='item.component === "el-upload" && !($attrs.disabled || item.props?.disabled)',
 					v-model:file-list='form[item.key]',
 					:disabled='$attrs.disabled || item.props?.disabled',
 					:show-file-list='false',
+					list-type='picture-card',
 					v-bind='item.props',
 					v-on='item.events || {}',
 					style='margin-bottom: 12px'
@@ -133,7 +136,8 @@ el-form.form(ref='formRef', v-bind='$attrs', :model='form', @submit.native.preve
 						)
 							.icon
 								el-icon(v-blur, :size='20')
-									icon-ep-circle-plus
+									//- icon-ep-circle-plus
+									circle-plus
 								.text {{ item.props?.text || '上传图片' }}
 				slot(:name='`${item.key}-left`')
 		slot
@@ -147,6 +151,7 @@ import {
 	ElTimePicker,
 	ElTimeSelect,
 	ElSlider,
+	ElTreeSelect,
 } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import 'element-plus/es/components/cascader/style/css'
@@ -154,6 +159,8 @@ import 'element-plus/es/components/date-picker/style/css'
 import 'element-plus/es/components/time-picker/style/css'
 import 'element-plus/es/components/time-select/style/css'
 import 'element-plus/es/components/slider/style/css'
+import 'element-plus/es/components/tree-select/style/css'
+import { QuestionFilled, Delete, CirclePlus } from '@element-plus/icons-vue'
 
 const compoents = shallowReactive({
 	'el-switch': ElSwitch,
@@ -162,6 +169,7 @@ const compoents = shallowReactive({
 	'el-time-picker': ElTimePicker,
 	'el-time-select': ElTimeSelect,
 	'el-slider': ElSlider,
+	'el-tree-select': ElTreeSelect,
 })
 
 const props = defineProps({
@@ -169,6 +177,10 @@ const props = defineProps({
 	modelValue: { type: Object, required: true },
 	// formItem数据
 	data: { type: Array, required: true },
+	expandedIndex: {
+		type: Number,
+		required: false,
+	},
 	// 是否自动在 label 名称后添加冒号
 	labelColon: {
 		type: Boolean,
@@ -179,6 +191,10 @@ const props = defineProps({
 		type: Number,
 		default: 16,
 	},
+})
+
+const dataComp = computed(() => {
+	return props.data.filter(item => item.show ?? true)
 })
 
 // 获取父组件所有slot的数据 进行处理
@@ -215,7 +231,7 @@ const form = computed({
 const verifyIntegrity = () => {
 	const keys = []
 	for (const item of props.data) {
-		if (!item.component) {
+		if (!item.component && !item.slot) {
 			console.warn('Warning：data中缺少component字段')
 			break
 		}
@@ -250,6 +266,7 @@ const validateField = key => {
 const resetForm = () => unref(formRef)?.resetFields()
 // 移除该表单项的校验结果
 const clearValidate = () => unref(formRef)?.clearValidate()
+
 // 获取表单数据
 const getFormData = async () => {
 	if (JSON.stringify(rules.value) !== '{}') {
@@ -277,8 +294,12 @@ defineExpose({
 
 <style lang="scss" scoped>
 .form {
+	--el-disabled-text-color: #3f435e;
+	--el-disabled-bg-color: #f6f7fa;
+	--el-border-radius-base: 6px;
+	--el-text-color-regular: #5f627d;
 	.el-form-item {
-		margin-bottom: 14px;
+		margin-bottom: 20px;
 	}
 	:deep {
 		.el-input,
