@@ -42,13 +42,19 @@ const props = defineProps({
 		default: () => {},
 	},
 })
-const emits = defineEmits(['refresh', 'update:pagination'])
+const emits = defineEmits(['refresh', 'update:pagination', 'search', 'reset'])
 
 // 搜索条件
 const formRef = ref()
+// 查询
+const handleSearch = () => {
+	emits('search')
+	emits('refresh', 1)
+}
 // 重置
 const handleReset = () => {
 	formRef.value.resetForm()
+	emits('reset')
 	emits('refresh', 1)
 }
 
@@ -97,7 +103,7 @@ defineExpose({
 			:data='search.data'
 		)
 			.default-buttons
-				el-button(v-if='search?.data.length', v-blur, type='primary', @click='emits("refresh", 1)') 查询
+				el-button(v-if='search?.data.length', v-blur, type='primary', @click='handleSearch') 查询
 				el-button(v-if='search?.data.length', v-blur, @click='handleReset') 重置
 			template(v-for='searchSlot in searchSlots', #[searchSlot]='{ data }')
 				slot(:name='`search-${searchSlot}`', :data='data')
