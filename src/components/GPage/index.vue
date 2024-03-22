@@ -37,6 +37,10 @@ const props = defineProps({
 			}
 		},
 	},
+	paginationProps: {
+		type: Object,
+		default: () => {},
+	},
 })
 const emits = defineEmits(['refresh', 'update:pagination'])
 
@@ -113,7 +117,7 @@ defineExpose({
 		//- 分页
 		g-pagination(
 			v-if='!hidePagination',
-			v-bind='pagination',
+			v-bind='paginationProps',
 			v-model='paginationComp',
 			@pagination='emits("refresh")'
 		)
