@@ -423,6 +423,9 @@ defineExpose({
 			text-overflow: ellipsis;
 			overflow: hidden;
 		}
+		.el-input .el-input__inner {
+			height: var(--el-input-inner-height) !important;
+		}
 	}
 	.el-input {
 		display: inline-flex;
